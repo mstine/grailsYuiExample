@@ -6,7 +6,10 @@ class ContactController {
 
   def scaffold = Contact
 
-  def _list = { }
+  def _list1 = { }
+  def _list2 = { }
+  def _list3 = { }
+
 
   def dataTable = {
     def contacts = Contact.list()

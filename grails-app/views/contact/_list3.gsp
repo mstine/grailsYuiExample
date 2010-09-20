@@ -21,17 +21,17 @@
   <script src="${resource(dir: "js/yui-2.8.1/build/datatable", file: "datatable-min.js")}" type="text/javascript"></script>
 
   <script type="text/javascript">
-    function createAsyncSubmitter(recordId, controller, action, formatter) {
+    function createAsyncSubmitter(action, formatter) {
       return function(callback, newValue) {
         var record = this.getRecord();
-        var recordIdValue = record.getData(recordId);
+        var recordIdValue = record.getData("id");
 
         if (formatter != null) {
           newValue = formatter(newValue)
         }
 
         //TODO: Find a way to make this URL generation automatically include the rootContext rather than hardcoding it
-        YAHOO.util.Connect.asyncRequest('GET', '/grailsYuiExample/' + controller + '/' + action + '?id=' + recordIdValue + '&choice=' + newValue,
+        YAHOO.util.Connect.asyncRequest('GET', '/grailsYuiExample/contact/' + action + '?id=' + recordIdValue + '&choice=' + newValue,
         {
           success:function(o) {
             var r = YAHOO.lang.JSON.parse(o.responseText);
@@ -90,17 +90,17 @@
       };
 
       var contactTypeChoiceEditor = new YAHOO.widget.DropdownCellEditor({
-        asyncSubmitter: createAsyncSubmitter('id', 'contact', 'updateType')
+        asyncSubmitter: createAsyncSubmitter('updateType')
       });
       initChoiceEditorFromRequest(contactTypeChoiceEditor, '${createLink(controller:"contactType", action:"choices")}');
 
       var productChoiceEditor = new YAHOO.widget.DropdownCellEditor({
-        asyncSubmitter: createAsyncSubmitter('id', 'contact', 'updateProduct')
+        asyncSubmitter: createAsyncSubmitter('updateProduct')
       });
       initChoiceEditorFromRequest(productChoiceEditor, '${createLink(controller:"product", action:"choices")}');
 
       var customerChoiceEditor = new YAHOO.widget.DropdownCellEditor({
-        asyncSubmitter: createAsyncSubmitter('id', 'contact', 'updateCustomer')
+        asyncSubmitter: createAsyncSubmitter('updateCustomer')
       });
       initChoiceEditorFromRequest(customerChoiceEditor, '${createLink(controller:"customer", action:"choices")}');
 
@@ -109,13 +109,13 @@
         {key:"customer", label:"Customer", sortable:true, editor: customerChoiceEditor},
         {key:"product", label:"Product", sortable:true, editor: productChoiceEditor},
         {key:"date", label:"Date", sortable:true, formatter:"date", editor: new YAHOO.widget.DateCellEditor({
-          asyncSubmitter: createAsyncSubmitter('id', 'contact', 'updateDate', function(newValue) {
+          asyncSubmitter: createAsyncSubmitter('updateDate', function(newValue) {
             return (newValue.getMonth() + 1) + '/' + newValue.getDate() + '/' + newValue.getFullYear();
           })
         })},
         {key:"type", label:"Type", sortable:true, editor: contactTypeChoiceEditor},
         {key:"notes", label:"Notes", editor: new YAHOO.widget.TextboxCellEditor({
-          asyncSubmitter: createAsyncSubmitter('id', 'contact', 'updateNotes')
+          asyncSubmitter: createAsyncSubmitter('updateNotes')
         })},
         {key:"delete", label:"", formatter:"button"}
       ];
