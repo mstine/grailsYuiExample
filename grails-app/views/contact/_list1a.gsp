@@ -21,35 +21,6 @@
   <script src="${resource(dir: "js/yui-2.8.1/build/datatable", file: "datatable-min.js")}" type="text/javascript"></script>
 
   <script type="text/javascript">
-    function createAsyncSubmitter(action, formatter) {
-      return function(callback, newValue) {
-        var record = this.getRecord();
-        var recordIdValue = record.getData("id");
-
-        if (formatter != null) {
-          newValue = formatter(newValue)
-        }
-
-        //TODO: Find a way to make this URL generation automatically include the rootContext rather than hardcoding it
-        YAHOO.util.Connect.asyncRequest('GET', '/grailsYuiExample/contact/' + action + '?id=' + recordIdValue + '&choice=' + newValue,
-        {
-          success:function(o) {
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.replyCode == 201) {
-              callback(true, r.data);
-            } else {
-              alert(r.replyText);
-              callback();
-            }
-          },
-          failure:function(o) {
-            alert(o.statusText);
-            callback();
-          },
-          scope:this
-        });
-      }
-    }
     function initChoiceEditorFromRequest(choiceEditor, request) {
       var choiceRequest = YAHOO.util.Connect.asyncRequest('GET', request, {
         success:function(o) {
@@ -87,34 +58,22 @@
         ]
       };
 
-      var contactTypeChoiceEditor = new YAHOO.widget.DropdownCellEditor({
-        asyncSubmitter: createAsyncSubmitter('updateType')
-      });
+      var contactTypeChoiceEditor = new YAHOO.widget.DropdownCellEditor();
       initChoiceEditorFromRequest(contactTypeChoiceEditor, '${createLink(controller:"contactType", action:"choices")}');
 
-      var productChoiceEditor = new YAHOO.widget.DropdownCellEditor({
-        asyncSubmitter: createAsyncSubmitter('updateProduct')
-      });
+      var productChoiceEditor = new YAHOO.widget.DropdownCellEditor();
       initChoiceEditorFromRequest(productChoiceEditor, '${createLink(controller:"product", action:"choices")}');
 
-      var customerChoiceEditor = new YAHOO.widget.DropdownCellEditor({
-        asyncSubmitter: createAsyncSubmitter('updateCustomer')
-      });
+      var customerChoiceEditor = new YAHOO.widget.DropdownCellEditor();
       initChoiceEditorFromRequest(customerChoiceEditor, '${createLink(controller:"customer", action:"choices")}');
 
       var myColumnDefs = [
         {key:"id"},
         {key:"customer", label:"Customer", sortable:true, editor: customerChoiceEditor},
         {key:"product", label:"Product", sortable:true, editor: productChoiceEditor},
-        {key:"date", label:"Date", sortable:true, formatter:"date", editor: new YAHOO.widget.DateCellEditor({
-          asyncSubmitter: createAsyncSubmitter('updateDate', function(newValue) {
-            return (newValue.getMonth() + 1) + '/' + newValue.getDate() + '/' + newValue.getFullYear();
-          })
-        })},
+        {key:"date", label:"Date", sortable:true, formatter:"date", editor: new YAHOO.widget.DateCellEditor()},
         {key:"type", label:"Type", sortable:true, editor: contactTypeChoiceEditor},
-        {key:"notes", label:"Notes", editor: new YAHOO.widget.TextboxCellEditor({
-          asyncSubmitter: createAsyncSubmitter('updateNotes')
-        })}
+        {key:"notes", label:"Notes", editor: new YAHOO.widget.TextboxCellEditor()}
       ];
 
       var myDataTable = new YAHOO.widget.DataTable("datatable", myColumnDefs, myDS);
@@ -123,31 +82,11 @@
       myDataTable.hideColumn(mlsIdCol);
 
       myDataTable.subscribe("cellClickEvent", myDataTable.onEventShowCellEditor);
-
-      YAHOO.util.Event.addListener("addRow", "click", function() {
-        YAHOO.util.Connect.asyncRequest('GET', '/grailsYuiExample/contact/add/',
-        {
-          success:function(o) {
-            var r = YAHOO.lang.JSON.parse(o.responseText);
-            if (r.replyCode == 201) {
-              myDataTable.addRow({id:r.data.id, customer:r.data.customer, product:r.data.product, date:new Date(), type:r.data.type, notes:''});
-            } else {
-              alert(r.replyText);
-            }
-          },
-          failure:function(o) {
-            alert(o.statusText);
-          },
-          scope:this
-        });
-      });
-    })
-            ;
+    });
   </script>
 </head>
 <body class="yui-skin-sam">
 <h1>Contact Manager</h1>
 <div id="datatable"></div>
-<input id="addRow" type="button" value="Add Contact"/>
 </body>
 </html>

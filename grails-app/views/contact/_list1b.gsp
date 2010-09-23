@@ -31,7 +31,7 @@
         }
 
         //TODO: Find a way to make this URL generation automatically include the rootContext rather than hardcoding it
-        YAHOO.util.Connect.asyncRequest('GET', '/grailsYuiExample/contact/' + action + '?id=' + recordIdValue + '&choice=' + newValue,
+        YAHOO.util.Connect.asyncRequest('POST', '/grailsYuiExample/contact/' + action + '?id=' + recordIdValue + '&choice=' + newValue,
         {
           success:function(o) {
             var r = YAHOO.lang.JSON.parse(o.responseText);

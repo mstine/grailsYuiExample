@@ -6,7 +6,9 @@ class ContactController {
 
   def scaffold = Contact
 
-  def _list1 = { }
+  def _list0 = { }
+  def _list1a = { }
+  def _list1b = { }
   def _list2 = { }
   def _list3 = { }
 
