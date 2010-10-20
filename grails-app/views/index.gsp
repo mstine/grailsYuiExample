@@ -95,6 +95,18 @@
                     </g:each>
                 </ul>
             </div>
+
+          <div id="iterationList" class="dialog">
+                <h2>Contact Manager Iterations:</h2>
+                <ul>
+                    <li><g:link controller="contact" action="list">Iteration Zero</g:link></li>
+                  <li><g:link controller="contact" action="_list0">Iteration One</g:link></li>
+                  <li><g:link controller="contact" action="_list1a">Iteration Two (A)</g:link></li>
+                  <li><g:link controller="contact" action="_list1b">Iteration Two (B)</g:link></li>                  
+                  <li><g:link controller="contact" action="_list2">Iteration Three</g:link></li>
+                  <li><g:link controller="contact" action="_list3">Iteration Four</g:link></li>
+                </ul>
+            </div>
         </div>
     </body>
 </html>
